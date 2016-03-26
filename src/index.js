@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Main} from './app/main';
+import {BoardView} from './components/board';
 
-import './index.css';
+import './main.scss';
+import './style.scss';
 
 ReactDOM.render(
-  <Main/>,
+  <BoardView/>,
   document.getElementById('root')
 );
