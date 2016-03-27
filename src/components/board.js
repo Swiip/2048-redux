@@ -1,28 +1,29 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 
-import {Board} from '../game/board';
+// import {Board} from '../game/board';
 import {Cell} from './cell';
 import {TileView} from './tile';
-import {GameEndOverlay} from './overlay';
+// import {GameEndOverlay} from './overlay';
 
 export class BoardView extends Component {
-  constructor() {
-    super();
-    this.state = {board: new Board()};
-  }
+  // constructor() {
+  //   super();
+  //   this.state = {board: new Board()};
+  // }
 
   restartGame() {
-    this.setState({board: new Board()});
+    // this.setState({board: new Board()});
   }
 
   handleKeyDown(event) {
-    if (this.state.board.hasWon()) {
+    if (this.props.won) {
       return;
     }
     if (event.keyCode >= 37 && event.keyCode <= 40) {
       event.preventDefault();
       const direction = event.keyCode - 37;
-      this.setState({board: this.state.board.move(direction)});
+      // this.setState({board: this.state.board.move(direction)});
+      this.props.move(direction);
     }
   }
 
@@ -35,7 +36,7 @@ export class BoardView extends Component {
   }
 
   render() {
-    const {cells, tiles} = this.state.board;
+    const {cells, tiles} = this.props;
     return (
       <div className="board" tabIndex="1">
         {cells.map((row, i) => (
@@ -48,8 +49,16 @@ export class BoardView extends Component {
         {tiles.filter(tile => tile.value !== 0).map((tile, i) => (
           <TileView key={i} tile={tile} />
         ))}
-        <GameEndOverlay board={this.state.board} onRestart={this.restartGame.bind(this)} />
       </div>
     );
   }
+
+  // <GameEndOverlay board={this.state.board} onRestart={this.restartGame.bind(this)} />}}
 }
+
+BoardView.propTypes = {
+  cells: PropTypes.array.isRequired,
+  tiles: PropTypes.array.isRequired,
+  won: PropTypes.bool.isRequired,
+  move: PropTypes.func.isRequired
+};

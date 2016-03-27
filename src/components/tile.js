@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
+import {isNew, hasMoved, fromRow, toRow, fromColumn, toColumn} from '../game';
 
 export class TileView extends Component {
   shouldComponentUpdate(nextProps) {
     if (this.props.tile !== nextProps.tile) {
       return true;
     }
-    if (!nextProps.tile.hasMoved() && !nextProps.tile.isNew()) {
+    if (!hasMoved(nextProps.tile) && !isNew(nextProps.tile)) {
       return false;
     }
     return true;
@@ -21,12 +22,12 @@ export class TileView extends Component {
     if (tile.mergedInto) {
       classArray.push('merged');
     }
-    if (tile.isNew()) {
+    if (isNew(tile)) {
       classArray.push('new');
     }
-    if (tile.hasMoved()) {
-      classArray.push(`row_from_${tile.fromRow()}_to_${tile.toRow()}`);
-      classArray.push(`column_from_${tile.fromColumn()}_to_${tile.toColumn()}`);
+    if (hasMoved(tile)) {
+      classArray.push(`row_from_${fromRow(tile)}_to_${toRow(tile)}`);
+      classArray.push(`column_from_${fromColumn(tile)}_to_${toColumn(tile)}`);
       classArray.push('isMoving');
     }
     return (
