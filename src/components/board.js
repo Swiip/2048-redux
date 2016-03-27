@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {Board} from '../game';
+import {Board} from '../game/board';
 import {Cell} from './cell';
 import {TileView} from './tile';
 import {GameEndOverlay} from './overlay';
