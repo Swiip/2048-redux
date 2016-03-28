@@ -51,6 +51,10 @@
     "extends": [
       "xo-react",
       "xo-space/esnext"
-    ]
+    ],
+    "rules": {
+      "react/jsx-indent-props": [2, 2],
+      "react/jsx-closing-bracket-location": 0
+    }
   }
 }

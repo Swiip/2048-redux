@@ -1,19 +1,17 @@
-import _ from 'lodash';
-import {MOVE} from './actions';
-import {size, createTile, addRandomTile, setPositions, clearOldTiles, move} from '../game';
+import {MOVE, RESTART, CONTINUE} from './actions';
+import {init} from '../game/init';
+import {clearOldTiles, move} from '../game/move';
+import {hasWon, hasLost} from '../game/end';
 
 function getInitialState() {
-  const tiles = [];
-  const cells = _.range(size).map(() => _.range(size).map(() => createTile(tiles)));
-  tiles.push(..._.flatten(cells));
-
-  addRandomTile(cells, tiles);
-  setPositions(cells);
+  const {cells, tiles} = init();
 
   return {
     cells,
     tiles,
-    won: false
+    won: false,
+    beyond: false,
+    lost: false
   };
 }
 
@@ -21,10 +19,22 @@ export function reducer(state = getInitialState(), action) {
   switch (action.type) {
     case MOVE: {
       const tiles = clearOldTiles(state.tiles);
+      const cells = move(state.cells, tiles, action.direction);
+      const won = hasWon(cells);
+      const lost = hasLost(cells);
+      const beyond = state.beyond;
+      return {tiles, cells, won, lost, beyond};
+    }
+    case RESTART: {
+      return getInitialState();
+    }
+    case CONTINUE: {
       return {
-        tiles,
-        cells: move(state.cells, tiles, action.direction),
-        won: state.won
+        tiles: state.tiles,
+        cells: state.cells,
+        won: state.won,
+        lost: state.lost,
+        beyond: true
       };
     }
     default: {

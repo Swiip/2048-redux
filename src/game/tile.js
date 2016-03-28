@@ -1,48 +1,64 @@
-export class Tile {
-  constructor(value, row, column) {
-    this.value = value || 0;
-    this.row = row || -1;
-    this.column = column || -1;
-    this.oldRow = -1;
-    this.oldColumn = -1;
-    this.markForDeletion = false;
-    this.mergedInto = null;
-    this.id = Tile.id++;
-  }
+let tileId = 0;
 
-  moveTo(row, column) {
-    this.oldRow = this.row;
-    this.oldColumn = this.column;
-    this.row = row;
-    this.column = column;
-  }
-
-  isNew() {
-    return this.oldRow === -1 && !this.mergedInto;
-  }
-
-  hasMoved() {
-    return (
-      this.fromRow() !== -1 &&
-      (this.fromRow() !== this.toRow() || this.fromColumn() !== this.toColumn())
-    ) || this.mergedInto;
-  }
-
-  fromRow() {
-    return this.mergedInto ? this.row : this.oldRow;
-  }
-
-  fromColumn() {
-    return this.mergedInto ? this.column : this.oldColumn;
-  }
-
-  toRow() {
-    return this.mergedInto ? this.mergedInto.row : this.row;
-  }
-
-  toColumn() {
-    return this.mergedInto ? this.mergedInto.column : this.column;
-  }
+export function createTile(tiles, value, row, column) {
+  const newTile = {
+    id: tileId++,
+    value: value || 0,
+    row: row || -1,
+    column: column || -1,
+    oldRow: -1,
+    oldColumn: -1,
+    markForDeletion: false,
+    mergedInto: null
+  };
+  tiles.push(newTile);
+  return newTile;
 }
 
-Tile.id = 0;
+export function isNew(tile) {
+  return tile.oldRow === -1 && !tile.mergedInto;
+}
+
+export function hasMoved(tile) {
+  return (
+    fromRow(tile) !== -1 &&
+    (fromRow(tile) !== toRow(tile) || fromColumn(tile) !== toColumn(tile))
+  ) || tile.mergedInto;
+}
+
+function fromRow(tile) {
+  return tile.mergedInto ? tile.row : tile.oldRow;
+}
+
+function fromColumn(tile) {
+  return tile.mergedInto ? tile.column : tile.oldColumn;
+}
+
+function toRow(tile) {
+  return tile.mergedInto ? tile.mergedInto.row : tile.row;
+}
+
+function toColumn(tile) {
+  return tile.mergedInto ? tile.mergedInto.column : tile.column;
+}
+
+export function updateClasses(tiles) {
+  tiles.forEach(tile => {
+    tile.classes = ['tile'];
+    tile.classes.push(`tile${tile.value}`);
+    if (!tile.mergedInto) {
+      tile.classes.push(`position_${tile.row}_${tile.column}`);
+    }
+    if (tile.mergedInto) {
+      tile.classes.push('merged');
+    }
+    if (isNew(tile)) {
+      tile.classes.push('new');
+    }
+    if (hasMoved(tile)) {
+      tile.classes.push(`row_from_${fromRow(tile)}_to_${toRow(tile)}`);
+      tile.classes.push(`column_from_${fromColumn(tile)}_to_${toColumn(tile)}`);
+      tile.classes.push('isMoving');
+    }
+  });
+}

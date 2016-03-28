@@ -1,28 +1,17 @@
 import React, {Component, PropTypes} from 'react';
 
-// import {Board} from '../game/board';
 import {Cell} from './cell';
 import {TileView} from './tile';
-// import {GameEndOverlay} from './overlay';
+import {GameEndOverlay} from './overlay';
 
 export class BoardView extends Component {
-  // constructor() {
-  //   super();
-  //   this.state = {board: new Board()};
-  // }
-
-  restartGame() {
-    // this.setState({board: new Board()});
-  }
-
   handleKeyDown(event) {
-    if (this.props.won) {
+    if (this.props.won && !this.props.beyond) {
       return;
     }
     if (event.keyCode >= 37 && event.keyCode <= 40) {
       event.preventDefault();
       const direction = event.keyCode - 37;
-      // this.setState({board: this.state.board.move(direction)});
       this.props.move(direction);
     }
   }
@@ -36,29 +25,32 @@ export class BoardView extends Component {
   }
 
   render() {
-    const {cells, tiles} = this.props;
     return (
       <div className="board" tabIndex="1">
-        {cells.map((row, i) => (
+        {this.props.cells.map((row, i) => (
           <div key={i}>
             {row.map((row, i) => (
               <Cell key={i}/>
             ))}
           </div>
         ))}
-        {tiles.filter(tile => tile.value !== 0).map((tile, i) => (
+        {this.props.tiles.filter(tile => tile.value !== 0).map((tile, i) => (
           <TileView key={i} tile={tile} />
         ))}
+        <GameEndOverlay won={this.props.won} lost={this.props.lost} beyond={this.props.beyond}
+          onRestart={this.props.restart} onContinue={this.props.continue}/>
       </div>
     );
   }
-
-  // <GameEndOverlay board={this.state.board} onRestart={this.restartGame.bind(this)} />}}
 }
 
 BoardView.propTypes = {
   cells: PropTypes.array.isRequired,
   tiles: PropTypes.array.isRequired,
   won: PropTypes.bool.isRequired,
-  move: PropTypes.func.isRequired
+  lost: PropTypes.bool.isRequired,
+  beyond: PropTypes.bool.isRequired,
+  move: PropTypes.func.isRequired,
+  restart: PropTypes.func.isRequired,
+  continue: PropTypes.func.isRequired
 };

@@ -2,14 +2,14 @@ import React, {Component, PropTypes} from 'react';
 
 export class GameEndOverlay extends Component {
   render() {
-    const board = this.props.board;
-    let contents = '';
-    if (board.hasWon()) {
+    let contents = null;
+    if (this.props.won && !this.props.beyond) {
       contents = 'Good Job!';
-    } else if (board.hasLost()) {
+    }
+    if (this.props.lost) {
       contents = 'Game Over';
     }
-    if (!contents) {
+    if (contents === null) {
       return null;
     }
     return (
@@ -18,12 +18,22 @@ export class GameEndOverlay extends Component {
         <button className="tryAgain" onClick={this.props.onRestart.bind(this)}>
           Try again
         </button>
+        {
+          this.props.won ?
+          <button className="tryAgain" onClick={this.props.onContinue.bind(this)}>
+            Continue
+          </button> :
+          null
+        }
       </div>
     );
   }
 }
 
 GameEndOverlay.propTypes = {
-  board: PropTypes.object.isRequired,
-  onRestart: PropTypes.func.isRequired
+  won: PropTypes.bool.isRequired,
+  lost: PropTypes.bool.isRequired,
+  beyond: PropTypes.bool.isRequired,
+  onRestart: PropTypes.func.isRequired,
+  onContinue: PropTypes.func.isRequired
 };

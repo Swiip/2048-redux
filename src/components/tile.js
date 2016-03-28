@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {isNew, hasMoved, fromRow, toRow, fromColumn, toColumn} from '../game';
+import {isNew, hasMoved} from '../game/tile';
 
 export class TileView extends Component {
   shouldComponentUpdate(nextProps) {
@@ -13,25 +13,9 @@ export class TileView extends Component {
   }
 
   render() {
-    const tile = this.props.tile;
-    const classArray = ['tile'];
-    classArray.push(`tile${tile.value}`);
-    if (!tile.mergedInto) {
-      classArray.push(`position_${tile.row}_${tile.column}`);
-    }
-    if (tile.mergedInto) {
-      classArray.push('merged');
-    }
-    if (isNew(tile)) {
-      classArray.push('new');
-    }
-    if (hasMoved(tile)) {
-      classArray.push(`row_from_${fromRow(tile)}_to_${toRow(tile)}`);
-      classArray.push(`column_from_${fromColumn(tile)}_to_${toColumn(tile)}`);
-      classArray.push('isMoving');
-    }
     return (
-      <span className={classArray.join(' ')} key={tile.id}>{tile.value}</span>
+      <span className={this.props.tile.classes.join(' ')}
+        key={this.props.tile.id}>{this.props.tile.value}</span>
     );
   }
 }

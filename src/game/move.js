@@ -1,28 +1,15 @@
 import _ from 'lodash';
 
-export const size = 4;
-export const fourProbability = 0.1;
-
-let tileId = 0;
-
-export function createTile(tiles, value, row, column) {
-  const newTile = {
-    id: tileId++,
-    value: value || 0,
-    row: row || -1,
-    column: column || -1,
-    oldRow: -1,
-    oldColumn: -1,
-    markForDeletion: false,
-    mergedInto: null
-  };
-  tiles.push(newTile);
-  return newTile;
-}
+import {size, fourProbability} from './conf';
+import {createTile, updateClasses} from './tile';
 
 export function addRandomTile(cells, tiles) {
   const emptyCells = _.flatten(
-    cells.map((row, rowIndex) => row.map((cell, columnIndex) => ({rowIndex, columnIndex, value: cell.value})))
+    cells.map((row, rowIndex) => {
+      return row.map((cell, columnIndex) => {
+        return {rowIndex, columnIndex, value: cell.value};
+      });
+    })
   ).filter(cell => cell.value === 0);
   const index = ~~(Math.random() * emptyCells.length);
   const cell = emptyCells[index];
@@ -63,6 +50,7 @@ export function move(cells, tiles, direction) {
     addRandomTile(cells, tiles);
   }
   setPositions(cells);
+  updateClasses(tiles);
   return cells;
 }
 
@@ -95,37 +83,9 @@ function moveLeft(cells, tiles) {
         targetTile.value += tile2.value;
       }
       resultRow[target] = targetTile;
-      // won |= (targetTile.value === 2048);
       hasChanged |= (targetTile.value !== cells[row][target].value);
     }
     cells[row] = resultRow;
   }
   return hasChanged;
-}
-
-export function isNew(tile) {
-  return tile.oldRow === -1 && !tile.mergedInto;
-}
-
-export function hasMoved(tile) {
-  return (
-    fromRow(tile) !== -1 &&
-    (fromRow(tile) !== toRow(tile) || fromColumn(tile) !== toColumn(tile))
-  ) || tile.mergedInto;
-}
-
-export function fromRow(tile) {
-  return tile.mergedInto ? tile.row : tile.oldRow;
-}
-
-export function fromColumn(tile) {
-  return tile.mergedInto ? tile.column : tile.oldColumn;
-}
-
-export function toRow(tile) {
-  return tile.mergedInto ? tile.mergedInto.row : tile.row;
-}
-
-export function toColumn(tile) {
-  return tile.mergedInto ? tile.mergedInto.column : tile.column;
 }
