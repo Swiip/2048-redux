@@ -1,33 +1,7 @@
 import _ from 'lodash';
 
-import {size, fourProbability} from './conf';
-import {createTile, updateClasses} from './tile';
-
-export function addRandomTile(cells, tiles) {
-  const emptyCells = _.flatten(
-    cells.map((row, rowIndex) => {
-      return row.map((cell, columnIndex) => {
-        return {rowIndex, columnIndex, value: cell.value};
-      });
-    })
-  ).filter(cell => cell.value === 0);
-  const index = ~~(Math.random() * emptyCells.length);
-  const cell = emptyCells[index];
-  const newValue = Math.random() < fourProbability ? 4 : 2;
-  cells[cell.rowIndex][cell.columnIndex] = createTile(tiles, newValue);
-}
-
-export function setPositions(cells) {
-  cells.forEach((row, rowIndex) => {
-    row.forEach((tile, columnIndex) => {
-      tile.oldRow = tile.row;
-      tile.oldColumn = tile.column;
-      tile.row = rowIndex;
-      tile.column = columnIndex;
-      tile.markForDeletion = false;
-    });
-  });
-}
+import {size} from './conf';
+import {createTile} from './tile';
 
 export function clearOldTiles(tiles) {
   tiles = tiles.filter(tile => tile.markForDeletion === false);
@@ -42,16 +16,11 @@ export function move(cells, tiles, direction) {
   _.times(direction, () => {
     cells = rotateLeft(cells);
   });
-  const hasChanged = moveLeft(cells, tiles);
+  const changed = moveLeft(cells, tiles);
   _.times(size - direction, () => {
     cells = rotateLeft(cells);
   });
-  if (hasChanged) {
-    addRandomTile(cells, tiles);
-  }
-  setPositions(cells);
-  updateClasses(tiles);
-  return cells;
+  return {cells, changed};
 }
 
 function rotateLeft(cells) {

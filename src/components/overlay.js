@@ -19,7 +19,7 @@ export class GameEndOverlay extends Component {
           Try again
         </button>
         {
-          this.props.won ?
+          this.props.won && !this.props.lost ?
           <button className="tryAgain" onClick={this.props.onContinue.bind(this)}>
             Continue
           </button> :

@@ -1,21 +1,21 @@
 import {connect} from 'react-redux';
 import {BoardView} from '../components/board';
-import {move, restart, actionContinue} from './actions';
+import {move, start, actionContinue} from './actions';
 
 const mapStateToProps = state => {
   return {
-    tiles: state.tiles,
-    cells: state.cells,
-    won: state.won,
-    lost: state.lost,
-    beyond: state.beyond
+    tiles: state.board.tiles,
+    cells: state.board.cells,
+    won: state.flags.won,
+    lost: state.flags.lost,
+    beyond: state.flags.beyond
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     move: direction => dispatch(move(direction)),
-    restart: () => dispatch(restart()),
+    start: () => dispatch(start()),
     continue: () => dispatch(actionContinue())
   };
 };

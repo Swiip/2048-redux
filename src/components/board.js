@@ -38,7 +38,7 @@ export class BoardView extends Component {
           <TileView key={i} tile={tile} />
         ))}
         <GameEndOverlay won={this.props.won} lost={this.props.lost} beyond={this.props.beyond}
-          onRestart={this.props.restart} onContinue={this.props.continue}/>
+          onRestart={this.props.start} onContinue={this.props.continue}/>
       </div>
     );
   }
@@ -51,6 +51,6 @@ BoardView.propTypes = {
   lost: PropTypes.bool.isRequired,
   beyond: PropTypes.bool.isRequired,
   move: PropTypes.func.isRequired,
-  restart: PropTypes.func.isRequired,
+  start: PropTypes.func.isRequired,
   continue: PropTypes.func.isRequired
 };

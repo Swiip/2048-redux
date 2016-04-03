@@ -9,7 +9,8 @@ export function createTile(tiles, value, row, column) {
     oldRow: -1,
     oldColumn: -1,
     markForDeletion: false,
-    mergedInto: null
+    mergedInto: null,
+    classes: []
   };
   tiles.push(newTile);
   return newTile;
@@ -40,6 +41,31 @@ function toRow(tile) {
 
 function toColumn(tile) {
   return tile.mergedInto ? tile.mergedInto.column : tile.column;
+}
+
+export function updatePositions(cells) {
+  return cells.map((row, rowIndex) => {
+    return row.map((tile, columnIndex) => {
+      tile.oldRow = tile.row;
+      tile.oldColumn = tile.column;
+      tile.row = rowIndex;
+      tile.column = columnIndex;
+      tile.markForDeletion = false;
+      return tile;
+    });
+  });
+}
+
+export function setPositions(cells) {
+  cells.forEach((row, rowIndex) => {
+    row.forEach((tile, columnIndex) => {
+      tile.oldRow = tile.row;
+      tile.oldColumn = tile.column;
+      tile.row = rowIndex;
+      tile.column = columnIndex;
+      tile.markForDeletion = false;
+    });
+  });
 }
 
 export function updateClasses(tiles) {
