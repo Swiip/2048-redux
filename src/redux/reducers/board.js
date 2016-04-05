@@ -21,13 +21,13 @@ export function board(state = getInitialState(), action) {
     }
     case ADD_TILE: {
       addRandomTile(state.cells, state.tiles, action.row, action.column, action.value);
-      const cells = state.cells.map(cell => cell);
-      return Object.assign({}, state, {cells});
+      const cells = [...state.cells];
+      return {...state, cells};
     }
     case UPDATE: {
       const cells = updatePositions(state.cells);
       updateClasses(state.tiles);
-      return Object.assign({}, state, {cells});
+      return {...state, cells};
     }
     default: {
       return state;

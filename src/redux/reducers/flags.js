@@ -11,13 +11,13 @@ function getInitialState() {
 export function flags(state = getInitialState(), action) {
   switch (action.type) {
     case WON: {
-      return Object.assign({}, state, {won: true});
+      return {...state, won: true};
     }
     case LOST: {
-      return Object.assign({}, state, {lost: true});
+      return {...state, lost: true};
     }
     case CONTINUE: {
-      return Object.assign({}, state, {beyond: true});
+      return {...state, beyond: true};
     }
     case RESTART: {
       return getInitialState();
