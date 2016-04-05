@@ -1,23 +1,31 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 
 import {Cell} from './cell';
 import {TileView} from './tile';
-import {GameEndOverlay} from './overlay';
+import {store} from '../redux/2048';
+import {chooseRandomTile} from '../game/add';
 
 export class BoardView extends Component {
+  constructor() {
+    super();
+    this.state = store.getState();
+  }
+
   handleKeyDown(event) {
-    if (this.props.won && !this.props.beyond) {
-      return;
-    }
     if (event.keyCode >= 37 && event.keyCode <= 40) {
       event.preventDefault();
       const direction = event.keyCode - 37;
-      this.props.move(direction);
+      store.dispatch({type: 'MOVE', direction});
+      const tile = chooseRandomTile(store.getState().cells);
+      store.dispatch({type: 'ADD_TILE', ...tile});
+      store.dispatch({type: 'UPDATE'});
     }
   }
 
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
+
+    store.subscribe(() => this.setState(store.getState()));
   }
 
   componentWillUnmount() {
@@ -27,30 +35,17 @@ export class BoardView extends Component {
   render() {
     return (
       <div className="board" tabIndex="1">
-        {this.props.cells.map((row, i) => (
+        {this.state.cells.map((row, i) => (
           <div key={i}>
             {row.map((row, i) => (
               <Cell key={i}/>
             ))}
           </div>
         ))}
-        {this.props.tiles.filter(tile => tile.value !== 0).map((tile, i) => (
+        {this.state.tiles.filter(tile => tile.value !== 0).map((tile, i) => (
           <TileView key={i} tile={tile} />
         ))}
-        <GameEndOverlay won={this.props.won} lost={this.props.lost} beyond={this.props.beyond}
-          onRestart={this.props.start} onContinue={this.props.continue}/>
       </div>
     );
   }
 }
-
-BoardView.propTypes = {
-  cells: PropTypes.array.isRequired,
-  tiles: PropTypes.array.isRequired,
-  won: PropTypes.bool.isRequired,
-  lost: PropTypes.bool.isRequired,
-  beyond: PropTypes.bool.isRequired,
-  move: PropTypes.func.isRequired,
-  start: PropTypes.func.isRequired,
-  continue: PropTypes.func.isRequired
-};
