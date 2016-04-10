@@ -1,4 +1,3 @@
-import {createStore} from './redux-lite';
 import {init} from '../game/init';
 import {addRandomTile} from '../game/add';
 import {updatePositions, updateClasses} from '../game/tile';
@@ -9,30 +8,22 @@ function getInitialState() {
   return {tiles, cells, changed: false};
 }
 
-function reducer(state = getInitialState(), action) {
-  switch (action.type) {
-    case 'START': {
-      return getInitialState();
-    }
-    case 'MOVE': {
-      const tiles = clearOldTiles(state.tiles);
-      const {cells, changed} = move(state.cells, tiles, action.direction);
-      return {tiles, cells, changed};
-    }
-    case 'ADD_TILE': {
-      addRandomTile(state.cells, state.tiles, action.row, action.column, action.value);
-      const cells = [...state.cells];
-      return {...state, cells};
-    }
-    case 'UPDATE': {
-      const cells = updatePositions(state.cells);
-      updateClasses(state.tiles);
-      return {...state, cells};
-    }
-    default: {
-      return state;
-    }
-  }
-}
+//////// Reducer ///////////
 
-export const store = createStore(reducer);
+// START
+return getInitialState();
+
+// MOVE
+const tiles = clearOldTiles(state.tiles);
+const {cells, changed} = move(state.cells, tiles, action.direction);
+return {tiles, cells, changed};
+
+// ADD
+addRandomTile(state.cells, state.tiles, action.row, action.column, action.value);
+const cells = [...state.cells];
+return {...state, cells};
+
+// UPDATE
+const cells = updatePositions(state.cells);
+updateClasses(state.tiles);
+return {...state, cells};
