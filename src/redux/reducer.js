@@ -1,4 +1,5 @@
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
+import createLogger from 'redux-logger';
 import {init} from '../game/init';
 import {addRandomTile} from '../game/add';
 import {updatePositions, updateClasses} from '../game/tile';
@@ -36,4 +37,7 @@ function reducer(state = getInitialState(), action) {
   }
 }
 
-export const store = createStore(reducer);
+export const store = createStore(
+  reducer,
+  applyMiddleware(createLogger())
+);

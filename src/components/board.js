@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import {Cell} from './cell';
 import {TileView} from './tile';
-import {store} from '../redux/2048';
+import {store} from '../redux/reducer';
 import {chooseRandomTile} from '../game/add';
 
 import {move, addTile, update} from '../redux/actions';

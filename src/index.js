@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 
-import {store} from './redux/2048';
+import {store} from './redux/reducer';
 
 import {BoardView} from './components/board';
 
