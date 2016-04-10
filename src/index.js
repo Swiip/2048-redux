@@ -7,13 +7,15 @@ import {BoardView} from './components/board';
 
 import {chooseRandomTile} from './game/add';
 
+import {start, addTile, update} from './redux/actions';
+
 import './main.scss';
 import './style.scss';
 
-store.dispatch({type: 'START'});
+store.dispatch(start());
 const tile = chooseRandomTile(store.getState().cells);
-store.dispatch({type: 'ADD_TILE', ...tile});
-store.dispatch({type: 'UPDATE'});
+store.dispatch(addTile(tile.row, tile.column, tile.value));
+store.dispatch(update());
 
 render(
   <BoardView/>,

@@ -5,6 +5,8 @@ import {TileView} from './tile';
 import {store} from '../redux/2048';
 import {chooseRandomTile} from '../game/add';
 
+import {move, addTile, update} from '../redux/actions';
+
 export class BoardView extends Component {
   constructor() {
     super();
@@ -15,10 +17,10 @@ export class BoardView extends Component {
     if (event.keyCode >= 37 && event.keyCode <= 40) {
       event.preventDefault();
       const direction = event.keyCode - 37;
-      store.dispatch({type: 'MOVE', direction});
+      store.dispatch(move(direction));
       const tile = chooseRandomTile(store.getState().cells);
-      store.dispatch({type: 'ADD_TILE', ...tile});
-      store.dispatch({type: 'UPDATE'});
+      store.dispatch(addTile(tile.row, tile.column, tile.value));
+      store.dispatch(update());
     }
   }
 
