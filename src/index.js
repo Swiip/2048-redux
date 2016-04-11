@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {createStore, combineReducers, applyMiddleware} from 'redux';
+import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
@@ -15,7 +15,10 @@ import './style.scss';
 
 const store = createStore(
   combineReducers({board, flags}),
-  applyMiddleware(createLogger(), thunk)
+  compose(
+    applyMiddleware(createLogger(), thunk),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
 );
 
 store.dispatch(start());

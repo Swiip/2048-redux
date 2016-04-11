@@ -1,4 +1,4 @@
-import {WON, LOST, CONTINUE, RESTART} from '../actions';
+import {WON, LOST, CONTINUE, START} from '../actions';
 
 function getInitialState() {
   return {
@@ -10,6 +10,9 @@ function getInitialState() {
 
 export function flags(state = getInitialState(), action) {
   switch (action.type) {
+    case START: {
+      return getInitialState();
+    }
     case WON: {
       return {...state, won: true};
     }
@@ -18,9 +21,6 @@ export function flags(state = getInitialState(), action) {
     }
     case CONTINUE: {
       return {...state, beyond: true};
-    }
-    case RESTART: {
-      return getInitialState();
     }
     default: {
       return state;
