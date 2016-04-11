@@ -24,7 +24,7 @@ export class BoardView extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
 
-    store.subscribe(() => this.setState(store.getState()));
+    // subscribe
   }
 
   componentWillUnmount() {
