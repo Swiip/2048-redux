@@ -17,8 +17,11 @@ export class BoardView extends Component {
       event.preventDefault();
       const direction = event.keyCode - 37;
       store.dispatch({type: 'MOVE', direction});
-      const tile = chooseRandomTile(store.getState().cells);
-      store.dispatch({type: 'ADD_TILE', ...tile});
+      const {board, changed} = store.getState();
+      if(changed) {
+        const tile = chooseRandomTile(board);
+        store.dispatch({type: 'ADD_TILE', ...tile});
+      }
       store.dispatch({type: 'UPDATE'});
     }
   }
@@ -26,11 +29,13 @@ export class BoardView extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
 
-    store.subscribe(() => this.setState(store.getState()));
+    this.unsubscribeListener = store.subscribe(() => this.setState(store.getState()));
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown.bind(this));
+
+    _.invoke(this, 'unsubscribeListener');
   }
 
   render() {
