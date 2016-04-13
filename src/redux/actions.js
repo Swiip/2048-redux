@@ -2,8 +2,8 @@ import {hasWon, hasLost} from '../game/end';
 import {chooseRandomTile} from '../game/add';
 
 export const ADD_TILE = 'ADD_TILE';
-export function addTile(cells) {
-  const {row, column, value} = chooseRandomTile(cells);
+export function addTile(board) {
+  const {row, column, value} = chooseRandomTile(board);
   return {
     type: ADD_TILE,
     row, column, value
@@ -56,15 +56,15 @@ export function lost() {
 export function move(direction) {
   return (dispatch, getState) => {
     dispatch(actionMove(direction));
-    const {board: {cells, changed}} = getState();
+    const {board: {board, changed}} = getState();
     if (changed) {
-      dispatch(addTile(cells));
+      dispatch(addTile(board));
     }
     dispatch(update());
-    if (hasWon(cells)) {
+    if (hasWon(board)) {
       dispatch(won());
     }
-    if (hasLost(cells)) {
+    if (hasLost(board)) {
       dispatch(lost());
     }
   };
@@ -73,8 +73,8 @@ export function move(direction) {
 export function start() {
   return (dispatch, getState) => {
     dispatch(actionStart());
-    const {board: {cells}} = getState();
-    dispatch(addTile(cells));
+    const {board: {board}} = getState();
+    dispatch(addTile(board));
     dispatch(update());
   };
 }

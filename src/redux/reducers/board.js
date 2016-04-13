@@ -2,11 +2,14 @@ import {MOVE, START, ADD_TILE, UPDATE} from '../actions';
 import {init} from '../../game/init';
 import {move} from '../../game/move';
 import {addRandomTile} from '../../game/add';
-import {updatePositions, updateClasses} from '../../game/tile';
+// import {updatePositions, updateClasses} from '../../game/tile';
+import {update} from '../../game/tile';
 
 function getInitialState() {
-  const cells = init();
-  return {cells, changed: false};
+  return {
+    board: init(),
+    changed: false
+  };
 }
 
 export function board(state = getInitialState(), action) {
@@ -16,18 +19,24 @@ export function board(state = getInitialState(), action) {
     }
     case MOVE: {
       // const clearedTiles = clearOldTiles(state.tiles);
-      const {cells, changed} = move(state.cells, action.direction);
-      return {cells, changed};
+      const {board, changed} = move(state.board, action.direction);
+      return {board, changed};
     }
     case ADD_TILE: {
-      const cells = addRandomTile(state.cells, action.row, action.column, action.value);
+      // const cells = addRandomTile(state.cells, action.row, action.column, action.value);
       // const cells = [...state.cells];
-      return {...state, cells};
+      return {
+        ...state,
+        board: addRandomTile(state.board, action.row, action.column, action.value)
+      };
     }
     case UPDATE: {
-      const positionedCells = updatePositions(state.cells);
-      const cells = updateClasses(positionedCells);
-      return {...state, cells};
+      // const positionedCells = updatePositions(state.cells);
+      // const cells = updateClasses(positionedCells);
+      return {
+        ...state,
+        board: update(state.board)
+      };
     }
     default: {
       return state;

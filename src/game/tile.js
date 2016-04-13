@@ -23,46 +23,47 @@ export function isNew(tile) {
 
 export function hasMoved(tile) {
   return (
-    fromRow(tile) !== -1 &&
-    (fromRow(tile) !== toRow(tile) || fromColumn(tile) !== toColumn(tile))
+    tile.oldRow !== -1 &&
+    (tile.oldRow !== tile.row || tile.oldColumn !== tile.column)
   ) || tile.mergedInto;
 }
 
-function fromRow(tile) {
-  return tile.mergedInto ? tile.row : tile.oldRow;
+// function fromRow(tile) {
+//   return tile.mergedInto ? tile.row : tile.oldRow;
+// }
+//
+// function fromColumn(tile) {
+//   return tile.mergedInto ? tile.column : tile.oldColumn;
+// }
+
+// function toRow(tile) {
+//   return tile.mergedInto ? tile.mergedInto.row : tile.row;
+// }
+
+// function toColumn(tile) {
+//   return tile.mergedInto ? tile.mergedInto.column : tile.column;
+// }
+
+export function update(board) {
+  return updateClasses(updatePositions(board));
 }
 
-function fromColumn(tile) {
-  return tile.mergedInto ? tile.column : tile.oldColumn;
-}
+export function updatePositions(board) {
+  return board.map((row, rowIndex) => {
+    return row.map((tile, columnIndex) => {
+      const tileUpdater = tile => ({
+        ...tile,
+        oldRow: tile.row,
+        oldColumn: tile.column,
+        row: rowIndex,
+        column: columnIndex
+      });
 
-function toRow(tile) {
-  return tile.mergedInto ? tile.mergedInto.row : tile.row;
-}
-
-function toColumn(tile) {
-  return tile.mergedInto ? tile.mergedInto.column : tile.column;
-}
-
-export function updatePositions(cells) {
-  return cells.map((row, rowIndex) => {
-    return row.map((column, columnIndex) => {
-      return {
-        cell: {
-          ...column.cell,
-          oldRow: column.cell.row,
-          oldColumn: column.cell.column,
-          row: rowIndex,
-          column: columnIndex
-        },
-        merged: column.merged.map(tile => ({
-          ...tile,
-          mergedInto: {
-            row: rowIndex,
-            column: columnIndex
-          }
-        }))
-      };
+      tile = tileUpdater(tile);
+      if (tile.merged) {
+        tile.merged = tile.merged.map(tileUpdater);
+      }
+      return tile;
     });
   });
 }
@@ -79,33 +80,39 @@ export function updatePositions(cells) {
 //   });
 // }
 
-export function updateClasses(cells) {
-  const tileUpdater = tile => {
+export function updateClasses(board) {
+  const tileUpdater = (tile, merged = false) => {
     tile = {...tile};
     tile.classes = ['tile'];
     tile.classes.push(`tile${tile.value}`);
-    if (!tile.mergedInto) {
-      tile.classes.push(`position_${tile.row}_${tile.column}`);
-    }
-    if (tile.mergedInto) {
+    // if (!tile.mergedInto) {
+    //   tile.classes.push(`position_${tile.row}_${tile.column}`);
+    // }
+    // if (tile.mergedInto) {
+    //   tile.classes.push('merged');
+    // }
+    if (merged) {
       tile.classes.push('merged');
+    } else {
+      tile.classes.push(`position_${tile.row}_${tile.column}`);
     }
     if (isNew(tile)) {
       tile.classes.push('new');
     }
     if (hasMoved(tile)) {
-      tile.classes.push(`row_from_${fromRow(tile)}_to_${toRow(tile)}`);
-      tile.classes.push(`column_from_${fromColumn(tile)}_to_${toColumn(tile)}`);
+      tile.classes.push(`row_from_${tile.oldRow}_to_${tile.row}`);
+      tile.classes.push(`column_from_${tile.oldColumn}_to_${tile.column}`);
       tile.classes.push('isMoving');
     }
     return tile;
   };
-  return cells.map(row => {
-    return row.map(column => {
-      return {
-        cell: tileUpdater(column.cell),
-        merged: column.merged.map(tileUpdater)
-      };
+  return board.map(row => {
+    return row.map(tile => {
+      tile = tileUpdater(tile);
+      if (tile.merged) {
+        tile.merged = tile.merged.map(tile => tileUpdater(tile, true));
+      }
+      return tile;
     });
   });
 }

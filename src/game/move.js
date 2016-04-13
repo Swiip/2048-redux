@@ -11,21 +11,21 @@ import {createTile} from './tile';
 //   return tiles;
 // }
 
-export function move(cells, direction) {
+export function move(board, direction) {
   // 0 -> left, 1 -> up, 2 -> right, 3 -> down
   // let pair = {cells, merged: []};
   _.times(direction, () => {
-    cells = rotateLeft(cells);
+    board = rotateLeft(board);
   });
-  const moveResult = moveLeft(cells);
-  cells = moveResult.cells;
+  const moveResult = moveLeft(board);
+  board = moveResult.board;
   _.times(size - direction, () => {
-    cells = rotateLeft(cells);
+    board = rotateLeft(board);
   });
-  return {cells, changed: moveResult.changed};
+  return {board, changed: moveResult.changed};
 }
 
-function rotateLeft(cells) {
+function rotateLeft(board) {
   // const rows = cells.length;
   // const columns = cells[0].length;
   // const result = [];
@@ -36,52 +36,49 @@ function rotateLeft(cells) {
   //   }
   // }
   // return result;
-  return cells.map((row, rowIndex) => {
-    return row.map((column, columnIndex) => {
-      return cells[columnIndex][size - rowIndex - 1];
+  return board.map((row, rowIndex) => {
+    return row.map((cell, columnIndex) => {
+      return board[columnIndex][size - rowIndex - 1];
     });
   });
 }
 
-function moveLeft(cells) {
+function moveLeft(board) {
   let changed = false;
   // for (let row = 0; row < size; ++row) {
-  cells = cells.map(row => {
+  board = board.map(row => {
     // const currentRow = cells[row].filter(tile => tile.value !== 0);
-    const currentRow = row.filter(tile => tile.cell.value !== 0);
+    const currentRow = row.filter(tile => tile.value !== 0);
     // const resultRow = [];
     // for (let target = 0; target < size; ++target) {
     return _.range(size).map(target => {
-      const merged = [];
       let targetTile;
       if (currentRow.length > 0) {
-        targetTile = {...currentRow.shift().cell};
+        targetTile = {...currentRow.shift()};
       } else {
         targetTile = createTile();
         // tiles = [...tiles, targetTile];
       }
-      if (currentRow.length > 0 && currentRow[0].cell.value === targetTile.value) {
+      if (currentRow.length > 0 && currentRow[0].value === targetTile.value) {
         const tile1 = targetTile;
         targetTile = createTile(targetTile.value);
+        targetTile.merged = [];
         // tiles = [...tiles, targetTile];
         // tile1.mergedInto = {...targetTile};
         // tile1.mergedInto = {row: rowIndex, column: target};
-        merged.push(tile1);
-        const tile2 = {...currentRow.shift().cell};
+        targetTile.merged.push(tile1);
+        const tile2 = {...currentRow.shift()};
         // tile2.mergedInto = {...targetTile};
         // tile2.mergedInto = {row: rowIndex, column: target};
         targetTile.value += tile2.value;
-        merged.push(tile2);
+        targetTile.merged.push(tile2);
       }
       // resultRow[target] = targetTile;
-      changed |= (targetTile.value !== row[target].cell.value);
-      return {
-        cell: targetTile,
-        merged
-      };
+      changed |= (targetTile.value !== row[target].value);
+      return targetTile;
     });
     // cells[row] = resultRow;
     // return resultRow;
   });
-  return {cells, changed};
+  return {board, changed};
 }
