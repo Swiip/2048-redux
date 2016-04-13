@@ -1,11 +1,14 @@
-import {init} from '../game/init';
-import {addRandomTile} from '../game/add';
-import {updatePositions, updateClasses} from '../game/tile';
-import {clearOldTiles, move} from '../game/move';
+import {createStore} from './redux-lite';
+import {init} from '../../game/init';
+import {move} from '../../game/move';
+import {addRandomTile} from '../../game/add';
+import {update} from '../../game/tile';
 
 function getInitialState() {
-  const {tiles, cells} = init();
-  return {tiles, cells, changed: false};
+  return {
+    board: init(),
+    changed: false
+  };
 }
 
 //////// Reducer ///////////
@@ -14,16 +17,16 @@ function getInitialState() {
 return getInitialState();
 
 // MOVE
-const tiles = clearOldTiles(state.tiles);
-const {cells, changed} = move(state.cells, tiles, action.direction);
-return {tiles, cells, changed};
+return move(state.board, action.direction);
 
 // ADD
-addRandomTile(state.cells, state.tiles, action.row, action.column, action.value);
-const cells = [...state.cells];
-return {...state, cells};
+return {
+  ...state,
+  board: addRandomTile(state.board, action.row, action.column, action.value)
+};
 
 // UPDATE
-const cells = updatePositions(state.cells);
-updateClasses(state.tiles);
-return {...state, cells};
+return {
+  ...state,
+  board: update(state.board)
+};
