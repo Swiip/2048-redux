@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 
 import {Cell} from './cell';
 import {TileView} from './tile';
-import {store} from '../redux/2048';
 
 export class BoardView extends Component {
   constructor() {
     super();
-    this.state = store.getState();
+    this.state = {
+      cells: [],
+      tiles: []
+    };
   }
 
   handleKeyDown(event) {
