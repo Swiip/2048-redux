@@ -1,90 +1,71 @@
 let tileId = 0;
 
-export function createTile(tiles, value, row, column) {
-  const newTile = {
+export function createTile(value, row, column) {
+  return {
     id: tileId++,
     value: value || 0,
     row: row || -1,
     column: column || -1,
     oldRow: -1,
     oldColumn: -1,
-    markForDeletion: false,
-    mergedInto: null,
     classes: []
   };
-  tiles.push(newTile);
-  return newTile;
 }
 
 export function isNew(tile) {
-  return tile.oldRow === -1 && !tile.mergedInto;
+  return tile.oldRow === -1;
 }
 
 export function hasMoved(tile) {
-  return (
-    fromRow(tile) !== -1 &&
-    (fromRow(tile) !== toRow(tile) || fromColumn(tile) !== toColumn(tile))
-  ) || tile.mergedInto;
+  return tile.oldRow !== -1 && (tile.oldRow !== tile.row || tile.oldColumn !== tile.column);
 }
 
-function fromRow(tile) {
-  return tile.mergedInto ? tile.row : tile.oldRow;
-}
+export function update(board) {
+  const updateBoth = (tile, row, column, merged) => {
+    tile = updatePositions(tile, row, column);
+    tile = updateClasses(tile, merged);
+    return tile;
+  };
 
-function fromColumn(tile) {
-  return tile.mergedInto ? tile.column : tile.oldColumn;
-}
-
-function toRow(tile) {
-  return tile.mergedInto ? tile.mergedInto.row : tile.row;
-}
-
-function toColumn(tile) {
-  return tile.mergedInto ? tile.mergedInto.column : tile.column;
-}
-
-export function updatePositions(cells) {
-  return cells.map((row, rowIndex) => {
+  return board.map((row, rowIndex) => {
     return row.map((tile, columnIndex) => {
-      tile.oldRow = tile.row;
-      tile.oldColumn = tile.column;
-      tile.row = rowIndex;
-      tile.column = columnIndex;
-      tile.markForDeletion = false;
+      tile = updateBoth(tile, rowIndex, columnIndex, false);
+      if (tile.merged) {
+        tile.merged = tile.merged.map(tile => {
+          return updateBoth(tile, rowIndex, columnIndex, true);
+        });
+      }
       return tile;
     });
   });
 }
 
-export function setPositions(cells) {
-  cells.forEach((row, rowIndex) => {
-    row.forEach((tile, columnIndex) => {
-      tile.oldRow = tile.row;
-      tile.oldColumn = tile.column;
-      tile.row = rowIndex;
-      tile.column = columnIndex;
-      tile.markForDeletion = false;
-    });
-  });
+function updatePositions(tile, row, column) {
+  return {
+    ...tile,
+    oldRow: tile.row,
+    oldColumn: tile.column,
+    row,
+    column
+  };
 }
 
-export function updateClasses(tiles) {
-  tiles.forEach(tile => {
-    tile.classes = ['tile'];
-    tile.classes.push(`tile${tile.value}`);
-    if (!tile.mergedInto) {
-      tile.classes.push(`position_${tile.row}_${tile.column}`);
-    }
-    if (tile.mergedInto) {
-      tile.classes.push('merged');
-    }
+function updateClasses(tile, merged = false) {
+  tile = {...tile};
+  tile.classes = ['tile'];
+  tile.classes.push(`tile${tile.value}`);
+  if (merged) {
+    tile.classes.push('merged');
+  } else {
+    tile.classes.push(`position_${tile.row}_${tile.column}`);
     if (isNew(tile)) {
       tile.classes.push('new');
     }
-    if (hasMoved(tile)) {
-      tile.classes.push(`row_from_${fromRow(tile)}_to_${toRow(tile)}`);
-      tile.classes.push(`column_from_${fromColumn(tile)}_to_${toColumn(tile)}`);
-      tile.classes.push('isMoving');
-    }
-  });
+  }
+  if (merged || hasMoved(tile)) {
+    tile.classes.push(`row_from_${tile.oldRow}_to_${tile.row}`);
+    tile.classes.push(`column_from_${tile.oldColumn}_to_${tile.column}`);
+    tile.classes.push('isMoving');
+  }
+  return tile;
 }
