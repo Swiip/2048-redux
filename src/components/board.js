@@ -18,7 +18,7 @@ export class BoardView extends Component {
       const direction = event.keyCode - 37;
 
       // MOVE
-      // ADD
+      // ADD TILE
       // UPDATE
     }
   }
@@ -26,11 +26,13 @@ export class BoardView extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown.bind(this));
 
-    // subscribe
+    // Subscribe
   }
 
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown.bind(this));
+
+    // Unsubscribe
   }
 
   render() {

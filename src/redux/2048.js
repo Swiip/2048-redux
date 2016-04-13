@@ -1,8 +1,8 @@
-import {createStore} from './redux-lite';
-import {init} from '../../game/init';
-import {move} from '../../game/move';
-import {addRandomTile} from '../../game/add';
-import {update} from '../../game/tile';
+import {createStore} from 'redux';
+import {init} from '../game/init';
+import {move} from '../game/move';
+import {addRandomTile} from '../game/add';
+import {update} from '../game/tile';
 
 function getInitialState() {
   return {

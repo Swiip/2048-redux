@@ -7,7 +7,7 @@ import './main.scss';
 import './style.scss';
 
 // START
-// ADD
+// ADD TILE
 // UPDATE
 
 render(
