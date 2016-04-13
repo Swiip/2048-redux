@@ -44,7 +44,7 @@ function moveLeft(board) {
         targetTile.value += tile2.value;
         targetTile.merged.push(tile2);
       }
-      changed |= (targetTile.value !== row[target].value);
+      changed |= targetTile.value !== row[target].value;
       return targetTile;
     });
   });

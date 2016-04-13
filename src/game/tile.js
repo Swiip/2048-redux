@@ -8,20 +8,16 @@ export function createTile(value, row, column) {
     column: column || -1,
     oldRow: -1,
     oldColumn: -1,
-    mergedInto: null,
     classes: []
   };
 }
 
 export function isNew(tile) {
-  return tile.oldRow === -1 && !tile.mergedInto;
+  return tile.oldRow === -1;
 }
 
 export function hasMoved(tile) {
-  return (
-    tile.oldRow !== -1 &&
-    (tile.oldRow !== tile.row || tile.oldColumn !== tile.column)
-  ) || tile.mergedInto;
+  return tile.oldRow !== -1 && (tile.oldRow !== tile.row || tile.oldColumn !== tile.column);
 }
 
 export function update(board) {
@@ -62,11 +58,11 @@ function updateClasses(tile, merged = false) {
     tile.classes.push('merged');
   } else {
     tile.classes.push(`position_${tile.row}_${tile.column}`);
+    if (isNew(tile)) {
+      tile.classes.push('new');
+    }
   }
-  if (isNew(tile)) {
-    tile.classes.push('new');
-  }
-  if (hasMoved(tile)) {
+  if (merged || hasMoved(tile)) {
     tile.classes.push(`row_from_${tile.oldRow}_to_${tile.row}`);
     tile.classes.push(`column_from_${tile.oldColumn}_to_${tile.column}`);
     tile.classes.push('isMoving');

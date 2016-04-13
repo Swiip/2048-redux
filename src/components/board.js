@@ -26,12 +26,9 @@ export class BoardView extends Component {
   }
 
   render() {
-    const merged = _(this.props.board).flatten()
-      .map(tile => tile.merged)
-      .filter(tile => tile)
-      .flatten().value();
+    const merged = _(this.props.board).flatten().map('merged').compact().flatten().value();
     const cells = _(this.props.board).flatten().value();
-    const tiles = merged.concat(cells).filter(tile => tile.value !== 0);
+    const tiles = _(merged).concat(cells).filter('value').value();
     return (
       <div className="board" tabIndex="1">
         {this.props.board.map((row, i) => (
