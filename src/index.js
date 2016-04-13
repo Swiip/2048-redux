@@ -13,7 +13,7 @@ import './main.scss';
 import './style.scss';
 
 store.dispatch(start());
-const tile = chooseRandomTile(store.getState().cells);
+const tile = chooseRandomTile(store.getState().board);
 store.dispatch(addTile(tile.row, tile.column, tile.value));
 store.dispatch(update());
 

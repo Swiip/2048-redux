@@ -1,14 +1,16 @@
 import {createStore, applyMiddleware} from 'redux';
 import createLogger from 'redux-logger';
 import {init} from '../game/init';
+import {move} from '../game/move';
 import {addRandomTile} from '../game/add';
-import {updatePositions, updateClasses} from '../game/tile';
-import {clearOldTiles, move} from '../game/move';
+import {update} from '../game/tile';
 import {START, MOVE, ADD_TILE, UPDATE} from './actions';
 
 function getInitialState() {
-  const {tiles, cells} = init();
-  return {tiles, cells, changed: false};
+  return {
+    board: init(),
+    changed: false
+  };
 }
 
 function reducer(state = getInitialState(), action) {
@@ -17,19 +19,19 @@ function reducer(state = getInitialState(), action) {
       return getInitialState();
     }
     case MOVE: {
-      const tiles = clearOldTiles(state.tiles);
-      const {cells, changed} = move(state.cells, tiles, action.direction);
-      return {tiles, cells, changed};
+      return move(state.board, action.direction);
     }
     case ADD_TILE: {
-      addRandomTile(state.cells, state.tiles, action.row, action.column, action.value);
-      const cells = [...state.cells];
-      return {...state, cells};
+      return {
+        ...state,
+        board: addRandomTile(state.board, action.row, action.column, action.value)
+      };
     }
     case UPDATE: {
-      const cells = updatePositions(state.cells);
-      updateClasses(state.tiles);
-      return {...state, cells};
+      return {
+        ...state,
+        board: update(state.board)
+      };
     }
     default: {
       return state;
