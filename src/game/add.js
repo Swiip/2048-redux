@@ -22,7 +22,6 @@ export function chooseRandomTile(board) {
 }
 
 export function addRandomTile(board, rowIndex, columnIndex, value) {
-  // cells[row][column] = createTile(value);
   return board.map((row, r) => {
     return row.map((tile, c) => {
       if (r === rowIndex && c === columnIndex) {

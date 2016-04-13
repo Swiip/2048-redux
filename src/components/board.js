@@ -26,27 +26,11 @@ export class BoardView extends Component {
   }
 
   render() {
-    // const merged = _.flatten(this.props.cells)
-    //   .map(tile => tile.mergedInto);
-    //   .filter(tile => tile);
-    // console.log('coucou', merged);
-    // const tiles = _(this.props.cells)
-    //   .flatten()
-    //   .map(column => [column.cell, ...column.merged])
-    //   .flatten()
-    //   .filter(tile => tile.value !== 0)
-    //   .value();
-    // const merged = _(this.props.cells).flatten()
-    //   .map(column => column.merged).flatten().value();
-    // const cells = _(this.props.cells).flatten()
-    //   .map(column => column.cell).value();
-    // const tiles = merged.concat(cells).filter(tile => tile.value !== 0);
     const merged = _(this.props.board).flatten()
       .map(tile => tile.merged)
       .filter(tile => tile)
       .flatten().value();
     const cells = _(this.props.board).flatten().value();
-    console.log('render', merged, cells);
     const tiles = merged.concat(cells).filter(tile => tile.value !== 0);
     return (
       <div className="board" tabIndex="1">
@@ -69,7 +53,6 @@ export class BoardView extends Component {
 
 BoardView.propTypes = {
   board: PropTypes.array.isRequired,
-  // merged: PropTypes.array.isRequired,
   won: PropTypes.bool.isRequired,
   lost: PropTypes.bool.isRequired,
   beyond: PropTypes.bool.isRequired,
