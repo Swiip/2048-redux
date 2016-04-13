@@ -6,8 +6,8 @@ import {createTile} from './tile';
 export function chooseRandomTile(cells) {
   const emptyCells = _.flatten(
     cells.map((row, rowIndex) => {
-      return row.map((cell, columnIndex) => {
-        return {rowIndex, columnIndex, value: cell.value};
+      return row.map((column, columnIndex) => {
+        return {rowIndex, columnIndex, value: column.cell.value};
       });
     })
   ).filter(cell => cell.value === 0);
@@ -21,6 +21,14 @@ export function chooseRandomTile(cells) {
   };
 }
 
-export function addRandomTile(cells, tiles, row, column, value) {
-  cells[row][column] = createTile(tiles, value);
+export function addRandomTile(cells, rowIndex, columnIndex, value) {
+  // cells[row][column] = createTile(value);
+  return cells.map((row, r) => {
+    return row.map((column, c) => {
+      if (r === rowIndex && c === columnIndex) {
+        column.cell = createTile(value);
+      }
+      return column;
+    });
+  });
 }

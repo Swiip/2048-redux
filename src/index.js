@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
-import createLogger from 'redux-logger';
+// import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import {board} from './redux/reducers/board';
@@ -16,7 +16,7 @@ import './style.scss';
 const store = createStore(
   combineReducers({board, flags}),
   compose(
-    applyMiddleware(createLogger(), thunk),
+    applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );

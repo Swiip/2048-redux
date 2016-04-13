@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, {Component, PropTypes} from 'react';
 
 import {Cell} from './cell';
@@ -25,6 +26,21 @@ export class BoardView extends Component {
   }
 
   render() {
+    // const merged = _.flatten(this.props.cells)
+    //   .map(tile => tile.mergedInto);
+    //   .filter(tile => tile);
+    // console.log('coucou', merged);
+    // const tiles = _(this.props.cells)
+    //   .flatten()
+    //   .map(column => [column.cell, ...column.merged])
+    //   .flatten()
+    //   .filter(tile => tile.value !== 0)
+    //   .value();
+    const merged = _(this.props.cells).flatten()
+      .map(column => column.merged).flatten().value();
+    const cells = _(this.props.cells).flatten()
+      .map(column => column.cell).value();
+    const tiles = merged.concat(cells).filter(tile => tile.value !== 0);
     return (
       <div className="board" tabIndex="1">
         {this.props.cells.map((row, i) => (
@@ -34,7 +50,7 @@ export class BoardView extends Component {
             ))}
           </div>
         ))}
-        {this.props.tiles.filter(tile => tile.value !== 0).map((tile, i) => (
+        {tiles.map((tile, i) => (
           <TileView key={i} tile={tile} />
         ))}
         <GameEndOverlay won={this.props.won} lost={this.props.lost} beyond={this.props.beyond}
@@ -46,7 +62,7 @@ export class BoardView extends Component {
 
 BoardView.propTypes = {
   cells: PropTypes.array.isRequired,
-  tiles: PropTypes.array.isRequired,
+  // merged: PropTypes.array.isRequired,
   won: PropTypes.bool.isRequired,
   lost: PropTypes.bool.isRequired,
   beyond: PropTypes.bool.isRequired,

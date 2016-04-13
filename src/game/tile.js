@@ -1,19 +1,20 @@
 let tileId = 0;
 
-export function createTile(tiles, value, row, column) {
-  const newTile = {
+export function createTile(value, row, column) {
+  // const newTile = {
+  return {
     id: tileId++,
     value: value || 0,
     row: row || -1,
     column: column || -1,
     oldRow: -1,
     oldColumn: -1,
-    markForDeletion: false,
+    // markForDeletion: false,
     mergedInto: null,
     classes: []
   };
-  tiles.push(newTile);
-  return newTile;
+  // tiles.push(newTile);
+  // return newTile;
 }
 
 export function isNew(tile) {
@@ -45,31 +46,42 @@ function toColumn(tile) {
 
 export function updatePositions(cells) {
   return cells.map((row, rowIndex) => {
-    return row.map((tile, columnIndex) => {
-      tile.oldRow = tile.row;
-      tile.oldColumn = tile.column;
-      tile.row = rowIndex;
-      tile.column = columnIndex;
-      tile.markForDeletion = false;
-      return tile;
+    return row.map((column, columnIndex) => {
+      return {
+        cell: {
+          ...column.cell,
+          oldRow: column.cell.row,
+          oldColumn: column.cell.column,
+          row: rowIndex,
+          column: columnIndex
+        },
+        merged: column.merged.map(tile => ({
+          ...tile,
+          mergedInto: {
+            row: rowIndex,
+            column: columnIndex
+          }
+        }))
+      };
     });
   });
 }
 
-export function setPositions(cells) {
-  cells.forEach((row, rowIndex) => {
-    row.forEach((tile, columnIndex) => {
-      tile.oldRow = tile.row;
-      tile.oldColumn = tile.column;
-      tile.row = rowIndex;
-      tile.column = columnIndex;
-      tile.markForDeletion = false;
-    });
-  });
-}
+// export function setPositions(cells) {
+//   cells.forEach((row, rowIndex) => {
+//     row.forEach((tile, columnIndex) => {
+//       tile.oldRow = tile.row;
+//       tile.oldColumn = tile.column;
+//       tile.row = rowIndex;
+//       tile.column = columnIndex;
+//       tile.markForDeletion = false;
+//     });
+//   });
+// }
 
-export function updateClasses(tiles) {
-  tiles.forEach(tile => {
+export function updateClasses(cells) {
+  const tileUpdater = tile => {
+    tile = {...tile};
     tile.classes = ['tile'];
     tile.classes.push(`tile${tile.value}`);
     if (!tile.mergedInto) {
@@ -86,5 +98,14 @@ export function updateClasses(tiles) {
       tile.classes.push(`column_from_${fromColumn(tile)}_to_${toColumn(tile)}`);
       tile.classes.push('isMoving');
     }
+    return tile;
+  };
+  return cells.map(row => {
+    return row.map(column => {
+      return {
+        cell: tileUpdater(column.cell),
+        merged: column.merged.map(tileUpdater)
+      };
+    });
   });
 }

@@ -4,8 +4,8 @@ import {move, start, actionContinue} from './actions';
 
 const mapStateToProps = state => {
   return {
-    tiles: state.board.tiles,
     cells: state.board.cells,
+    // merged: state.board.merged,
     won: state.flags.won,
     lost: state.flags.lost,
     beyond: state.flags.beyond
