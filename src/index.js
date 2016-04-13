@@ -11,7 +11,7 @@ import './main.scss';
 import './style.scss';
 
 store.dispatch({type: 'START'});
-const tile = chooseRandomTile(store.getState().cells);
+const tile = chooseRandomTile(store.getState().board);
 store.dispatch({type: 'ADD_TILE', ...tile});
 store.dispatch({type: 'UPDATE'});
 
