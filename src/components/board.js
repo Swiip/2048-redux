@@ -3,17 +3,17 @@ import React, {Component, PropTypes} from 'react';
 
 import {Cell} from './cell';
 import {TileView} from './tile';
-import {GameEndOverlay} from './overlay';
 
 export class BoardView extends Component {
   handleKeyDown(event) {
-    if (this.props.won && !this.props.beyond) {
-      return;
-    }
     if (event.keyCode >= 37 && event.keyCode <= 40) {
       event.preventDefault();
       const direction = event.keyCode - 37;
       this.props.move(direction);
+      if (this.props.changed) {
+        this.props.addTile(this.props.board);
+      }
+      this.props.update();
     }
   }
 
@@ -41,8 +41,6 @@ export class BoardView extends Component {
         {tiles.map((tile, i) => (
           <TileView key={i} tile={tile} />
         ))}
-        <GameEndOverlay won={this.props.won} lost={this.props.lost} beyond={this.props.beyond}
-          onRestart={this.props.start} onContinue={this.props.continue}/>
       </div>
     );
   }

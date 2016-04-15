@@ -2,26 +2,26 @@ import React from 'react';
 import {render} from 'react-dom';
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
 import {Provider} from 'react-redux';
-// import createLogger from 'redux-logger';
-import thunk from 'redux-thunk';
+import createLogger from 'redux-logger';
 
-import {board} from './redux/reducers/board';
-import {flags} from './redux/reducers/flags';
+import {reducer} from './redux/reducer';
 import {Board} from './redux/container';
-import {start} from './redux/actions';
+import {start, addTile, update} from './redux/actions';
+
+import {chooseRandomTile} from './game/add';
 
 import './main.scss';
 import './style.scss';
 
 const store = createStore(
-  combineReducers({board, flags}),
-  compose(
-    applyMiddleware(thunk),
-    window.devToolsExtension ? window.devToolsExtension() : f => f
-  )
+  reducer,
+  applyMiddleware(createLogger())
 );
 
 store.dispatch(start());
+const tile = chooseRandomTile(store.getState().board);
+store.dispatch(addTile(tile.row, tile.column, tile.value));
+store.dispatch(update());
 
 render(
   <Provider store={store}>

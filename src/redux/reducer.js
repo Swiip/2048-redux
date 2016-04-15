@@ -1,8 +1,8 @@
-import {MOVE, START, ADD_TILE, UPDATE} from '../actions';
-import {init} from '../../game/init';
-import {move} from '../../game/move';
-import {addRandomTile} from '../../game/add';
-import {update} from '../../game/tile';
+import {init} from '../game/init';
+import {move} from '../game/move';
+import {addRandomTile} from '../game/add';
+import {update} from '../game/tile';
+import {START, MOVE, ADD_TILE, UPDATE} from './actions';
 
 function getInitialState() {
   return {
@@ -11,7 +11,7 @@ function getInitialState() {
   };
 }
 
-export function board(state = getInitialState(), action) {
+export function reducer(state = getInitialState(), action) {
   switch (action.type) {
     case START: {
       return getInitialState();
