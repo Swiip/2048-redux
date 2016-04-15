@@ -1,4 +1,3 @@
-import {hasWon, hasLost} from '../game/end';
 import {chooseRandomTile} from '../game/add';
 
 export const ADD_TILE = 'ADD_TILE';
@@ -39,17 +38,19 @@ export function actionContinue() {
   };
 }
 
-export const WON = 'WON';
-export function won() {
+export const HAS_WON = 'HAS_WON';
+export function hasWon(board) {
   return {
-    type: WON
+    type: HAS_WON,
+    board
   };
 }
 
-export const LOST = 'LOST';
-export function lost() {
+export const HAS_LOST = 'HAS_LOST';
+export function hasLost(board) {
   return {
-    type: LOST
+    type: HAS_LOST,
+    board
   };
 }
 
@@ -61,12 +62,8 @@ export function move(direction) {
       dispatch(addTile(board));
     }
     dispatch(update());
-    if (hasWon(board)) {
-      dispatch(won());
-    }
-    if (hasLost(board)) {
-      dispatch(lost());
-    }
+    dispatch(hasWon(board));
+    dispatch(hasLost(board));
   };
 }
 

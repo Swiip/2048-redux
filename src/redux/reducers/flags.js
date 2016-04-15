@@ -1,4 +1,5 @@
-import {WON, LOST, CONTINUE, START} from '../actions';
+import {HAS_WON, HAS_LOST, CONTINUE, START} from '../actions';
+import {hasWon, hasLost} from '../../game/end';
 
 function getInitialState() {
   return {
@@ -13,11 +14,11 @@ export function flags(state = getInitialState(), action) {
     case START: {
       return getInitialState();
     }
-    case WON: {
-      return {...state, won: true};
+    case HAS_WON: {
+      return {...state, won: hasWon(action.board)};
     }
-    case LOST: {
-      return {...state, lost: true};
+    case HAS_LOST: {
+      return {...state, lost: hasLost(action.board)};
     }
     case CONTINUE: {
       return {...state, beyond: true};
