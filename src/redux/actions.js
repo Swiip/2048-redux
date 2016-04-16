@@ -57,7 +57,7 @@ export function hasLost(board) {
 export function move(direction) {
   return (dispatch, getState) => {
     dispatch(actionMove(direction));
-    const {board: {board, changed}} = getState();
+    const {board: {present: {board, changed}}} = getState();
     if (changed) {
       dispatch(addTile(board));
     }
@@ -70,7 +70,7 @@ export function move(direction) {
 export function start() {
   return (dispatch, getState) => {
     dispatch(actionStart());
-    const {board: {board}} = getState();
+    const {board: {present: {board}}} = getState();
     dispatch(addTile(board));
     dispatch(update());
   };

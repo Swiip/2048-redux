@@ -7,6 +7,10 @@ import {GameEndOverlay} from './overlay';
 
 export class BoardView extends Component {
   handleKeyDown(event) {
+    if (event.keyCode === 8) {
+      event.preventDefault();
+      this.props.undo();
+    }
     if (this.props.won && !this.props.beyond) {
       return;
     }
