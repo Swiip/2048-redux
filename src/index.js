@@ -8,8 +8,6 @@ import {reducer} from './redux/reducer';
 import {Board} from './redux/container';
 import {start, addTile, update} from './redux/actions';
 
-import {chooseRandomTile} from './game/add';
-
 import './main.scss';
 import './style.scss';
 
@@ -19,8 +17,7 @@ const store = createStore(
 );
 
 store.dispatch(start());
-const tile = chooseRandomTile(store.getState().board);
-store.dispatch(addTile(tile.row, tile.column, tile.value));
+store.dispatch(addTile(store.getState().board));
 store.dispatch(update());
 
 render(

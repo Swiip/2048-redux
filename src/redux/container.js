@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
 import {BoardView} from '../components/board';
 import {move, addTile, update} from './actions';
-import {chooseRandomTile} from '../game/add';
 
 const mapStateToProps = state => {
   return {
@@ -13,10 +12,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     move: direction => dispatch(move(direction)),
-    addTile: board => {
-      const tile = chooseRandomTile(board);
-      dispatch(addTile(tile.row, tile.column, tile.value));
-    },
+    addTile: board => dispatch(addTile(board)),
     update: () => dispatch(update())
   };
 };

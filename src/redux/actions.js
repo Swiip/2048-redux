@@ -1,3 +1,5 @@
+import {chooseRandomTile} from '../game/add';
+
 export const START = 'START';
 export function start() {
   return {
@@ -14,7 +16,8 @@ export function move(direction) {
 }
 
 export const ADD_TILE = 'ADD_TILE';
-export function addTile(row, column, value) {
+export function addTile(board) {
+  const {row, column, value} = chooseRandomTile(board);
   return {
     type: ADD_TILE,
     row, column, value
