@@ -48,10 +48,7 @@ export class BoardView extends Component {
 
 BoardView.propTypes = {
   board: PropTypes.array.isRequired,
-  won: PropTypes.bool.isRequired,
-  lost: PropTypes.bool.isRequired,
-  beyond: PropTypes.bool.isRequired,
   move: PropTypes.func.isRequired,
-  start: PropTypes.func.isRequired,
-  continue: PropTypes.func.isRequired
+  addTile: PropTypes.func.isRequired,
+  update: PropTypes.func.isRequired
 };
