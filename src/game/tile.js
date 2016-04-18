@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 let tileId = 0;
 
 export function createTile(value, row, column) {
@@ -40,6 +42,15 @@ export function update(board) {
   });
 }
 
+export function updateUndo(board, oldBoard) {
+  return board.map(row => {
+    return row.map(tile => {
+      tile = updateUndoClasses(tile, searchTile(oldBoard, tile.id));
+      return tile;
+    });
+  });
+}
+
 function updatePositions(tile, row, column) {
   return {
     ...tile,
@@ -68,4 +79,23 @@ function updateClasses(tile, merged = false) {
     tile.classes.push('isMoving');
   }
   return tile;
+}
+
+function updateUndoClasses(tile, oldTile) {
+  tile = {...tile};
+  tile.classes = _(tile.classes)
+    .reject(item => item === 'new')
+    .reject(className => ~className.indexOf('_from_'))
+    .value();
+
+  if (oldTile) {
+    tile.classes.push(`row_from_${oldTile.row}_to_${tile.row}`);
+    tile.classes.push(`column_from_${oldTile.column}_to_${tile.column}`);
+  }
+
+  return tile;
+}
+
+function searchTile(board, id) {
+  return _(board).flatten().map(tile => tile.merged ? [tile, ...tile.merged] : tile).flatten().find({id});
 }

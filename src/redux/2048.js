@@ -1,4 +1,4 @@
-import {createStore} from 'redux';
+import {createStore} from './redux-lite';
 import {init} from '../game/init';
 import {move} from '../game/move';
 import {addRandomTile} from '../game/add';
