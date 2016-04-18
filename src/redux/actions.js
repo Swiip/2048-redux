@@ -1,4 +1,5 @@
 import {chooseRandomTile} from '../game/add';
+import {ActionCreators} from 'redux-undo';
 
 export const ADD_TILE = 'ADD_TILE';
 export function addTile(board) {
@@ -21,6 +22,14 @@ export const UPDATE = 'UPDATE';
 function update() {
   return {
     type: UPDATE
+  };
+}
+
+export const UPDATE_UNDO = 'UPDATE_UNDO';
+export function updateUndo(oldBoard) {
+  return {
+    type: UPDATE_UNDO,
+    oldBoard
   };
 }
 
@@ -74,4 +83,16 @@ export function start() {
     dispatch(addTile(board));
     dispatch(update());
   };
+}
+
+export function undo() {
+  return (dispatch, getState) => {
+    const {board: {present: {board, changed}}} = getState();
+    dispatch(ActionCreators.undo()); // Undo udate
+    if (changed) {
+      dispatch(ActionCreators.undo()); // Undo addTile
+    }
+    dispatch(ActionCreators.undo()); // Undo move
+    dispatch(updateUndo(board));
+  }
 }

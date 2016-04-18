@@ -1,8 +1,9 @@
-import {MOVE, START, ADD_TILE, UPDATE} from '../actions';
+import {MOVE, START, ADD_TILE, UPDATE, UPDATE_UNDO} from '../actions';
 import {init} from '../../game/init';
 import {move} from '../../game/move';
 import {addRandomTile} from '../../game/add';
-import {update} from '../../game/tile';
+import {update, updateUndo} from '../../game/tile';
+import logBoard from '../../logBoard';
 
 function getInitialState() {
   return {
@@ -30,6 +31,12 @@ export function board(state = getInitialState(), action) {
         ...state,
         board: update(state.board)
       };
+    }
+    case UPDATE_UNDO: {
+      return {
+        ...state,
+        board: updateUndo(state.board, action.oldBoard)
+      }
     }
     default: {
       return state;
