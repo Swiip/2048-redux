@@ -3,7 +3,6 @@ import {init} from '../../game/init';
 import {move} from '../../game/move';
 import {addRandomTile} from '../../game/add';
 import {update, updateUndo} from '../../game/tile';
-import logBoard from '../../logBoard';
 
 function getInitialState() {
   return {
